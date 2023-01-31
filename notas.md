@@ -1,7 +1,12 @@
 ## Para crear la base de datos 
 - Abrir la terminal de python 
-    python3
+    
+    `python3`
+
 - Importar la base de datos 
-    from app import db 
+    
+    `from app import db `
+
 - Crear la base de datos 
-    db.createAll()
+    
+    `db.create_all()`
