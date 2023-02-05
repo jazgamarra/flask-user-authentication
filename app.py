@@ -1,9 +1,13 @@
 from flask import Flask, render_template, url_for, redirect 
+# Base de datos 
 from flask_sqlalchemy import SQLAlchemy
+# Libreria de flask login 
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+# Para generar formularios de jinja 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length
+# Para encriptar la contrasenha 
 from flask_bcrypt import Bcrypt
 
 # Creamos la aplicacion
@@ -41,12 +45,12 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Contrasenha"})
     submit = SubmitField('Crear cuenta')
 
-    # Validar que el usuario no exista ya en la base de datos
-    def validar_username(self, username):
-        existe_el_usuario = User.query.filter_by(username=username.data).first()
-        
-        if existe_el_usuario:
-            return '<h1> El usuario ya existe, por favor elija otro </h1>'
+# Validar que el usuario no exista ya en la base de datos
+def validar_username (username):
+    existe_el_usuario = User.query.filter_by(username=username.data).first()
+    
+    if existe_el_usuario:
+        return '<h1> El usuario ya existe, por favor elija otro </h1>'
 
 # Creamos el formulario para el inicio de sesion de usuarios registrados 
 class LoginForm (FlaskForm):
@@ -61,7 +65,7 @@ class LoginForm (FlaskForm):
 def home():
     return render_template('home.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET',    'POST'])
 def login():
     form = LoginForm()
 
@@ -91,6 +95,9 @@ def signup():
         # Extraer los datos del formulario
         usuario = form.username.data
         contrasenha = form.password.data
+
+        # Validar si existe el usuario en la base de datos 
+        validar_username(usuario)
 
         # Hashear la contrasenha
         contrasenha_hasheada = bcrypt.generate_password_hash(contrasenha).decode('utf-8')
